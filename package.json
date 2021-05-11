@@ -1,0 +1,37 @@
+{
+  "name": "aws-cdk-rabbitmq-stack",
+  "version": "0.1.0",
+  "main": "index.js",
+  "license": "GPL-3.0-only",
+  "homepage": "https://github.com/aligent/aws-cdk-waf-stack#readme",
+  "repository": {
+       "type": "git",
+       "url": "https://github.com/aligent/aws-cdk-waf-stack"
+  },
+  "types": "index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "prepublish": "tsc"
+  },
+  "devDependencies": {
+    "@aws-cdk/assert": "1.92.0",
+    "@types/jest": "^26.0.10",
+    "@types/node": "10.17.27",
+    "aws-cdk": "1.92.0",
+    "jest": "^26.4.2",
+    "ts-jest": "^26.5.3",
+    "ts-node": "^9.0.0",
+    "typescript": "~3.9.7"
+  },
+  "dependencies": {
+    "@aws-cdk/aws-amazonmq": "^1.92.0",
+    "@aws-cdk/aws-codepipeline": "^1.92.0",
+    "@aws-cdk/aws-codepipeline-actions": "^1.92.0",
+    "@aws-cdk/aws-iam": "^1.92.0",
+    "@aws-cdk/aws-kms": "^1.92.0",
+    "@aws-cdk/aws-s3": "^1.92.0",
+    "@aws-cdk/core": "1.92.0",
+    "@aws-cdk/pipelines": "^1.92.0",
+    "source-map-support": "^0.5.16"
+  }
+}
