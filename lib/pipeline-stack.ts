@@ -20,7 +20,7 @@ class PipelineStage extends Stage {
 }
 
 // Paremeters for Pipeline that runs the Stage
-interface PipeplineProps extends StackProps {
+interface PipelineProps extends StackProps {
     envname: string;
     owner: string;
     repo: string;
@@ -32,7 +32,7 @@ interface PipeplineProps extends StackProps {
 
 // Define Pipeline details
 export class PipelineStack extends Stack {
-    constructor(scope: Construct, id: string, props: PipeplineProps) {
+    constructor(scope: Construct, id: string, props: PipelineProps) {
     super(scope, id, props);
 
     const sourceArtifact = new codepipeline.Artifact();
