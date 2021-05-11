@@ -1,12 +1,12 @@
 {
-  "name": "aws-cdk-rabbitmq-stack",
+  "name": "@aligent/aws-cdk-rabbitmq-stack",
   "version": "0.1.0",
   "main": "index.js",
   "license": "GPL-3.0-only",
-  "homepage": "https://github.com/aligent/aws-cdk-waf-stack#readme",
+  "homepage": "https://github.com/aligent/aws-rabbitmq-waf-stack#readme",
   "repository": {
-       "type": "git",
-       "url": "https://github.com/aligent/aws-cdk-waf-stack"
+    "type": "git",
+    "url": "https://github.com/aligent/aws-rabbitmq-waf-stack"
   },
   "types": "index.d.ts",
   "scripts": {
