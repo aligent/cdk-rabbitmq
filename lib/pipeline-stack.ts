@@ -21,7 +21,7 @@ class PipelineStage extends Stage {
 
 // Paremeters for Pipeline that runs the Stage
 interface PipelineProps extends StackProps {
-    envname: string;
+    envName: string;
     owner: string;
     repo: string;
     branch: string;
@@ -38,7 +38,7 @@ export class PipelineStack extends Stack {
     const sourceArtifact = new codepipeline.Artifact();
     const cloudAssemblyArtifact = new codepipeline.Artifact();
 
-    const pipeline = new CdkPipeline(this, props.envname + '-pipeline', {
+    const pipeline = new CdkPipeline(this, props.envName + '-pipeline', {
         pipelineName: id,
         cloudAssemblyArtifact,
         sourceAction: new codepipeline_actions.BitBucketSourceAction({

@@ -1,49 +1,48 @@
-// import * as cdk from '@aws-cdk/core';
 import * as mq from '@aws-cdk/aws-amazonmq'; 
 import { Construct, StackProps, Stack, CfnOutput } from '@aws-cdk/core';
 import * as ec2 from '@aws-cdk/aws-ec2';
 
 export interface ResourceProps extends StackProps {
-  envname: string;
-  rabbitmqProps: mq.CfnBrokerProps;
-  magentoVpcId: string;
-  magentoBackendEcsHostSecurityGroupId: string;
+  envName: string;
+  rabbitMQProps: mq.CfnBrokerProps;
+  applicationVpcId: string;
+  applicationSecurityGroupId: string;
 }
 
 export class RabbitMQStack extends Stack {
   constructor(scope: Construct, id: string, props: ResourceProps) {
     super(scope, id, props);
 
-    const sourceSG = ec2.SecurityGroup.fromLookup(this, 'php-fpm', props.magentoBackendEcsHostSecurityGroupId)
-    const magentoVpc = ec2.Vpc.fromLookup(this, 'magentoVPC', {vpcId: props.magentoVpcId} )
+    const sourceSecurityGroup = ec2.SecurityGroup.fromLookup(this, 'sourceSecurityGroup', props.applicationSecurityGroupId)
+    const applicationVpc = ec2.Vpc.fromLookup(this, 'applicationVpc', {vpcId: props.applicationVpcId} )
     const securityGroup = new ec2.SecurityGroup(this, id, {
-      vpc: magentoVpc,
+      vpc: applicationVpc,
       allowAllOutbound: false,
     })
 
-    securityGroup.addIngressRule(sourceSG, ec2.Port.tcp(5671));
-    securityGroup.addIngressRule(sourceSG, ec2.Port.tcp(443));
+    securityGroup.addIngressRule(sourceSecurityGroup, ec2.Port.tcp(5671));
+    securityGroup.addIngressRule(sourceSecurityGroup, ec2.Port.tcp(443));
 
     // Choose only one or two subnets out of all the available private ones
     const rabbitMqSubnets: string[] = [];
-    if (props.rabbitmqProps.deploymentMode == 'SINGLE_INSTANCE') {
-      rabbitMqSubnets.push(magentoVpc.privateSubnets[0].subnetId);
+    if (props.rabbitMQProps.deploymentMode == 'SINGLE_INSTANCE') {
+      rabbitMqSubnets.push(applicationVpc.privateSubnets[0].subnetId);
     } else {
-      rabbitMqSubnets.push(magentoVpc.privateSubnets[0].subnetId);
-      rabbitMqSubnets.push(magentoVpc.privateSubnets[1].subnetId);
+      rabbitMqSubnets.push(applicationVpc.privateSubnets[0].subnetId);
+      rabbitMqSubnets.push(applicationVpc.privateSubnets[1].subnetId);
     };
     
-    const rabbitmq = new mq.CfnBroker(this, props.envname, {
-      autoMinorVersionUpgrade: props.rabbitmqProps.autoMinorVersionUpgrade,
-      brokerName: props.rabbitmqProps.brokerName,
-      deploymentMode: props.rabbitmqProps.deploymentMode,
-      engineType: props.rabbitmqProps.engineType,
-      engineVersion: props.rabbitmqProps.engineVersion,
-      hostInstanceType: props.rabbitmqProps.hostInstanceType,
-      publiclyAccessible: props.rabbitmqProps.publiclyAccessible,
-      users: props.rabbitmqProps.users,
-      logs: props.rabbitmqProps.logs,
-      maintenanceWindowStartTime: props.rabbitmqProps.maintenanceWindowStartTime,
+    const rabbitMQ = new mq.CfnBroker(this, props.envName, {
+      autoMinorVersionUpgrade: props.rabbitMQProps.autoMinorVersionUpgrade,
+      brokerName: props.rabbitMQProps.brokerName,
+      deploymentMode: props.rabbitMQProps.deploymentMode,
+      engineType: props.rabbitMQProps.engineType,
+      engineVersion: props.rabbitMQProps.engineVersion,
+      hostInstanceType: props.rabbitMQProps.hostInstanceType,
+      publiclyAccessible: props.rabbitMQProps.publiclyAccessible,
+      users: props.rabbitMQProps.users,
+      logs: props.rabbitMQProps.logs,
+      maintenanceWindowStartTime: props.rabbitMQProps.maintenanceWindowStartTime,
       securityGroups: [ securityGroup.securityGroupId ],
       subnetIds: rabbitMqSubnets,
     });
@@ -51,10 +50,10 @@ export class RabbitMQStack extends Stack {
     // Cfn does not respect .split(). We will get by with Arn for now.
     // const arn = rabbitmq.attrArn
     // const endpoint = arn.split(":", 7) + '.mq.' + this.region + '.amazonaws.com'
-    new CfnOutput(this, rabbitmq.brokerName + 'Arn', {
+    new CfnOutput(this, rabbitMQ.brokerName + 'Arn', {
       // value: rendpoint,
-      value: rabbitmq.attrArn,
-      exportName: rabbitmq.brokerName + 'Arn'
+      value: rabbitMQ.attrArn,
+      exportName: rabbitMQ.brokerName + 'Arn'
     });
   }
 };
