@@ -3,7 +3,6 @@ import { Construct, StackProps, Stack, CfnOutput } from '@aws-cdk/core';
 import * as ec2 from '@aws-cdk/aws-ec2';
 
 export interface ResourceProps extends StackProps {
-  envName: string;
   rabbitMQProps: mq.CfnBrokerProps;
   applicationVpcId: string;
   applicationSecurityGroupId: string;
@@ -13,9 +12,9 @@ export class RabbitMQStack extends Stack {
   constructor(scope: Construct, id: string, props: ResourceProps) {
     super(scope, id, props);
 
-    const sourceSecurityGroup = ec2.SecurityGroup.fromLookup(this, 'sourceSecurityGroup', props.applicationSecurityGroupId)
-    const applicationVpc = ec2.Vpc.fromLookup(this, 'applicationVpc', {vpcId: props.applicationVpcId} )
-    const securityGroup = new ec2.SecurityGroup(this, id, {
+    const sourceSecurityGroup = ec2.SecurityGroup.fromLookup(this, id + '-sourceSecurityGroup', props.applicationSecurityGroupId)
+    const applicationVpc = ec2.Vpc.fromLookup(this, id + '-applicationVpc', {vpcId: props.applicationVpcId} )
+    const securityGroup = new ec2.SecurityGroup(this, id + '-securityGroup', {
       vpc: applicationVpc,
       allowAllOutbound: false,
     })
@@ -32,7 +31,7 @@ export class RabbitMQStack extends Stack {
       rabbitMqSubnets.push(applicationVpc.privateSubnets[1].subnetId);
     };
     
-    const rabbitMQ = new mq.CfnBroker(this, props.envName, {
+    const rabbitMQ = new mq.CfnBroker(this, id + '-rabbitMQBroker', {
       autoMinorVersionUpgrade: props.rabbitMQProps.autoMinorVersionUpgrade,
       brokerName: props.rabbitMQProps.brokerName,
       deploymentMode: props.rabbitMQProps.deploymentMode,
