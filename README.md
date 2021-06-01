@@ -1,8 +1,6 @@
 # Aligent AWS RabbitMQ stack
 
 ## Overview
-### RabbitMQ
-You can use either MySQL or RabbitMQ for message queue processing. If you are using the **Bulk API** with Magento Commerce, the message queue system configuration defaults to using RabbitMQ as the message broker. 
 
 AWS support RabbitMQ as a part of AmazonMQ service. This repository is for building and configuring the brokers there.
 
@@ -64,8 +62,8 @@ Install cdk first (`npm install -g aws-cdk`, or [this instruction](https://docs.
 
     - CodeStar Connection ARN that was created in Step 1
     - BitBucket (or other version control system) repository/branch details
-    - Existing VPC ID of the application(Magento) where the RabbitMQ instance will be placed in
-    - Existing SecurityGroup of the application(Magento) backend instances where the RabbitMQ instance will be accessed from
+    - Existing VPC ID of the application where the RabbitMQ instance will be provisioned
+    - Existing SecurityGroup of the application backend instances where the RabbitMQ instance will be accessed from
     - RabbitMQ details of your choice: Deploy mode, engine version, instance size, user credentials, etc.
 
 7. Update `bin/rabbitmq.ts` if needed, e.g. additional environments or stack name changes.
@@ -87,29 +85,20 @@ Install cdk first (`npm install -g aws-cdk`, or [this instruction](https://docs.
 
     If you don't need a pipeline/cross-account deployment, deploy `<target-RabbitMQ-environment>/<target-RabbitMQ-environment>/stack` directly to the target account by `npx cdk deploy <StackName> --profile <TargetAccountProfile>`
 
-13. Go to the Magento project and update the below files with RabbitMQ details (diff SWG for the variable names, etc.):
-
-    - .env (for dev only)
-    - docker-composer-*.yml
-    - docker/php/config/docker-entrypoint-init.d/magento-env-php
-    - env.php.template
-    - cfndsl-parameters.yml (for AWS only)
-
-14. In Magento project, make sure Magento's `async.operations.all` cronjob along with other consumers is enabled. Note that `cron_run == false` must be set in `cron_consumers_runner` clause of `env.php.template` of Magento project to stop the consumers from being kicked off by Magento's internal cron schedule rather than OS's crontab.
 
 
 ### Connection and communication
-Magento talks to RabbitMQ via amqps protocol(5671/tcp). For visual management, use SSH tunneling.
+Applications talk to RabbitMQ via amqps protocol(5671/tcp). For visual management, use SSH tunneling.
 1. Add the below in your local `~/.ssh/config` file with *profile* and *path* updated (works only for SSM-enabled environments):
 
         host i-*
             User ec2-user
             ProxyCommand sh -c "aws --profile <TargetAccountProfile> ssm start-session --target %h --document-name AWS-StartSSHSession --parameters 'portNumber=%p'"
-            IdentityFile /path/to/ssh_key/for/magento_backend_instance
+            IdentityFile /path/to/ssh_key/for/backend_instance
 
-2. Find RabbitMQ endpoint hostname and Magento BE instance ID to run this command that will open a ssh connection (not an interactive shell with the `-N` flag):
+2. Find RabbitMQ endpoint hostname and the application  BE instance ID to run this command that will open a ssh connection (not an interactive shell with the `-N` flag):
 
-        ssh -N -L <random_local_port>:<RabbitMQ_endpoint>:443 <MagentoBEInstanceID>
+        ssh -N -L <random_local_port>:<RabbitMQ_endpoint>:443 <BEInstanceID>
 
     for example,
 
@@ -122,12 +111,6 @@ Magento talks to RabbitMQ via amqps protocol(5671/tcp). For visual management, u
     for example,
 
         https://localhost:56710
-
-### Exchange and Queue creation
-Magento creates an Exchange `magento`, and a queue `async.operations.all` upon `setup:upgrade` process. Just make sure Magento's `async.operations.all` cronjob is enabled.
-
-### RabbitMQ in development environment - THIS PART MUST BE INTERNAL
-Magento dev environment uses RabbitMQ container available in Docker Hub to emulate the AWS service. In order to avoid the hassle of enabling SSL for the off-the-shelf container, however, it just uses amqp protocol(5672/tcp) between Magento php-fpm and RabbitMQ container. They are defined in `.env` file, consumed by `env.php.template` via the `docker-composer-*.yml` and `docker/php/config/docker-entrypoint-init.d/magento-env-php`.
 
 
 ## Local development
