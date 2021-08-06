@@ -1,5 +1,5 @@
 {
-  "name": "@aligent/aws-cdk-rabbitmq-stack",
+  "name": "@aligent/cdk-rabbitmq",
   "version": "0.1.0",
   "main": "index.js",
   "license": "GPL-3.0-only",
@@ -23,7 +23,7 @@
     "typescript": "~3.9.7"
   },
   "dependencies": {
-    "@aws-cdk/aws-amazonmq": "^1.111.0",
+    "@aws-cdk/aws-amazonmq": "^1.117.0",
     "@aws-cdk/aws-ec2": "^1.111.0",
     "@aws-cdk/aws-iam": "^1.111.0",
     "@aws-cdk/aws-kms": "^1.111.0",
