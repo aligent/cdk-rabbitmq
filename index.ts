@@ -1,3 +1,3 @@
-import { RabbitMQStack } from "./lib/rabbitmq-stack"
+import { RabbitMQ } from "./lib/rabbitmq-construct"
 
-export { RabbitMQStack };
+export { RabbitMQ };

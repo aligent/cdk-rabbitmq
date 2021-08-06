@@ -1,7 +1,7 @@
-# Aligent AWS RabbitMQ stack
+# Aligent AWS RabbitMQ
 
 ## Overview
-This repository defines a CDK stack for hosting a RabbitMQ cluster within AWS.
+This repository defines a CDK construct for hosting a RabbitMQ cluster within AWS.
 It can be imported and used within CDK applications.
 
 ## Example
@@ -10,7 +10,7 @@ The following CDK snippet can be used to provision the static hosting stack.
 ```
 import 'source-map-support/register';
 import * as cdk from '@aws-cdk/core';
-import { StaticHostingStack } from '@aligent/aws-cdk-rabbitmq-stack'
+import { RabbitMq } from '@aligent/cdk-rabbitmq'
 import { Construct } from '@aws-cdk/core';
 
 const mqStackProps = {
@@ -42,6 +42,13 @@ const mqStackProps = {
 };
 
 const app = new cdk.App();
+class RabbitMQStack extends Stack {
+  constructor(scope: Construct, id: string, props: hostingStackProps) {
+    super(scope, id, props);
+
+    new RabbitMQ(scope, 'rabbitmq', props.rabbitMQProps);
+  }
+}
 
 new RabbitMQStack(scope, 'rabbit-mq-stack', mqStackProps);
 ```
