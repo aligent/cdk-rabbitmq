@@ -1,5 +1,5 @@
 {
-  "name": "@aligent/aws-cdk-rabbitmq-stack",
+  "name": "@aligent/cdk-rabbitmq",
   "version": "0.1.0",
   "main": "index.js",
   "license": "GPL-3.0-only",
