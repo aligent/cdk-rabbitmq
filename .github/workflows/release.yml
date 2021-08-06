@@ -21,7 +21,6 @@ jobs:
     - run: git config --global user.email "sysadmin+npm-deploy@aligent.com.au"
     - run: npm version ${{ github.event.release.tag_name }} --allow-same-version
     - run: npm run build
-    - run: npm test
     - run: npm publish --access public
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
