@@ -23,7 +23,7 @@
     "typescript": "~4.4.3"
   },
   "dependencies": {
-    "@aws-cdk/aws-amazonmq": "^1.111.0",
+    "@aws-cdk/aws-amazonmq": "^1.139.0",
     "@aws-cdk/aws-ec2": "^1.111.0",
     "@aws-cdk/aws-iam": "^1.111.0",
     "@aws-cdk/aws-kms": "^1.111.0",
