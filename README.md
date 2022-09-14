@@ -1,5 +1,9 @@
 # Aligent AWS RabbitMQ
 
+
+## Archived
+Further updates can be found here https://github.com/aligent/cdk-constructs/tree/main/packages/rabbitmq
+
 ## Overview
 This repository defines a CDK construct for hosting a RabbitMQ cluster within AWS.
 It can be imported and used within CDK applications.
